@@ -1,40 +1,40 @@
 var str = require('./count-triplets-massive-string.js');
 
-function isInteger (n) {
-    return n % 1 <= 0.000001;
+Array.prototype.multiplyAll = function () {
+    return this.reduce(function (acc, cv) {
+        return acc *= cv;
+    }, 1);
 }
 
-function countTriplets(arr, r) {
-    var curr = [], i = 0, counter = 0;
-    var hashMap = arr.reduce(function (acc, cv) { 
-        if (acc[cv]) acc[cv]++;
-        else acc[cv] = 1;
-        return acc;
-    }, {});
-    console.log(hashMap);
-    for (var key of Object.keys(hashMap)) {
-        var val = Number(key);
-        if (!isInteger((Math.log(val) / Math.log(r)))) {
-            console.log('not fit', val,(Math.log(val) / Math.log(r)) );
-            continue;
-        }
-        for (let v of [val, val * r, val * r * r]) { 
-            if (!hashMap[v]) {
-                curr.push(0);
-                break;
+function countTriplets (arr, r) {
+    let h = {};
+    for (let i of arr) {
+        /*
+         * This data structure defines the keys of hashmap h as
+         * the array elements, and the values as the corresponding
+         * arrays of size frequency(element), frequency(element * r),
+         * frequency(element * r * r)
+        */
+        if (h[i]) h[i][0]++;
+        else h[i] = [1, 0, 0];
+        let d = i;
+        for (let j of [0, 1]) {
+            d /= r;
+            if (d % 1 === 0) {
+                if (h[d]) h[d][j+1]++;
+                else {
+                    h[d] = [0, 0, 0];
+                    h[d][j+1]++;
+                }
             }
-            curr.push(hashMap[v]);
         }
-        console.log('curr: ', curr);
-        counter += curr.reduce(function (acc, cv) {
-            acc *= cv;
-            return acc;
-        }, 1);
-        curr = [];
     }
-    console.log(counter);
-
+    console.log(h);
+    let counter = 0;
+    for (let i of Object.keys(h)) {
+        counter += h[i].multiplyAll();
+    }
     return counter;
 }
 
-console.log(countTriplets(str.split(' '), 3));
+console.log(countTriplets([1, 2, 1, 2, 4], 2));
