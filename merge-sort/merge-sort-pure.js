@@ -35,7 +35,8 @@ function mergeHalves (arr, temp, leftStart, rightEnd) {
     }
 }
 
-var arr = [5, 2, 3, 5, 1, 10, 43];
+var arr = [2, 1, 3, 1, 2];
 var temp = [];
-mergesort(arr, temp, 0, 6);;
+var n = arr.length - 1;
+mergesort(arr, temp, 0, n);
 console.log('result', arr);
