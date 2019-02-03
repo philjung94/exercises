@@ -7,6 +7,9 @@ function binarySearch(arr, x) {
         if (arr[mid] === x) return mid;
         else if (x < arr[mid]) right = mid - 1;
         else left = mid + 1;
+        return binarySearch(arr.slice(left, right));
     }
     return left;
 }
+
+console.log(binarySearch([1, 2, 3, 10], 10));

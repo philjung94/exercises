@@ -2,23 +2,25 @@
 
 const fs = require('fs');
 
-process.stdin.resume();
-process.stdin.setEncoding('utf-8');
+//process.stdin.resume();
+//process.stdin.setEncoding('utf-8');
 
-let inputString = '';
+let inputString = '' + fs.readFileSync('./input01.txt');
 let currentLine = 0;
 
-process.stdin.on('data', inputStdin => {
-    inputString += inputStdin;
-});
+inputString = inputString.split('\n');
+main();
+//process.stdin.on('data', inputStdin => {
+//    inputString += inputStdin;
+//});
 
-process.stdin.on('end', _ => {
-    inputString = inputString.replace(/\s*$/, '')
-        .split('\n')
-        .map(str => str.replace(/\s*$/, ''));
-
-    main();
-});
+//process.stdin.on('end', _ => {
+//    inputString = inputString.replace(/\s*$/, '')
+//        .split('\n')
+//        .map(str => str.replace(/\s*$/, ''));
+//
+//    main();
+//});
 
 function readLine() {
     return inputString[currentLine++];
@@ -28,7 +30,7 @@ function ascendingOrder(a, b) {
     return Number(a) - Number(b);
 }
 
-Math.midpoint = function (d) {
+function getMidpoint(d) {
     return d % 2 === 1 ? Math.ceil(d / 2) : (d / 2) + 0.5;
 }
 
@@ -76,7 +78,13 @@ function activityNotifications(exp, d) {
      * Hashmap the frequency distribution
     */
     var h = new Map();
-    for (let i of arr) h.append(i);
+    h.append = function (n) {
+        if (this.has(n)) this.set(n, this.get(n) + 1);
+        else this.set(n, 1);
+    };
+    for (let i of arr) {
+        h.append(i);
+    }
 
     /*
      * Run loop through the main array to determine
@@ -102,14 +110,14 @@ function activityNotifications(exp, d) {
         /*
          * Calculte median across the array
         */
-        var m = median(h, Math.midpoint(d), 200);
+        var m = median(h, getMidpoint(d), 200);
 
         /*
          * If two times median is less than the
          * next digit than it is a notification
          */
         next = exp[i];
-        if (next >= 2 * m) console.log('found fraud', ++counter);
+        if (next > 2 * m) console.log('found fraud', ++counter, exp[i], m);
 
         /*
          * Get rid of the first digit in the array
@@ -121,7 +129,6 @@ function activityNotifications(exp, d) {
 }
 
 function main() {
-    const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
 
     const nd = readLine().split(' ');
 
@@ -133,8 +140,7 @@ function main() {
 
     let result = activityNotifications(exp, d);
 
-    ws.write(result + "\n");
+    console.log(result + "\n");
 
-    ws.end();
 }
 
