@@ -43,21 +43,7 @@ function roadsAndLibraries(n, c_lib, c_road, cities) {
         insert(n1, n2)
         insert(n2, n1)
     }
-    //for (let [node, adjacent] of cities) {
-    //    for (let i of [node, adjacent]) {
-    //        var other = i === node ? adjacent : node;
-    //        var temp = h.get(i);
-    //        temp.push(other);
-    //        h.set(i, temp);
-    //         /*
-    //          Be careful with setting a value to 
-    //          val = someArray.push(someVal);
-    //          RHS does not return the result of the push.
-    //          */
-    //    }
-    //}
 
-    //var visited = {};
     var toVisit = [];
     var visited = new Map();
     var networks = 0;
@@ -76,15 +62,14 @@ function roadsAndLibraries(n, c_lib, c_road, cities) {
                 continue;
             }
             visited.set(curr, 1);
-            //if (visited[curr]) continue;
-            //visited[curr] = 1;
             /*
             Array.prototype.concat() does not 
             modify the array but returns a new array
              */
             var temp = h.get(curr);
-            if (temp && temp.length) { 
-                toVisit = toVisit.concat(temp);
+            for (let t of temp) {
+                if (visited.has(t)) continue;
+                toVisit.push(t);
             }
             nodes++;
             h.delete(curr);
