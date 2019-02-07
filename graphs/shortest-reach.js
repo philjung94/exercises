@@ -6,14 +6,25 @@ function LinkedList (head, tail) {
     this.head = head;
     this.tail = tail;
     this.pop = (function () {
-        var temp = this.head;
-        this.head = this.head.next;
-        return temp
+        if (this.head && this.head.next) {
+            var temp = this.head;
+            this.head = this.head.next;
+            return temp;
+        } else if (this.head && !this.head.next){
+            var temp = new Node(this.head.data, undefined);
+            this.head = undefined;
+            this.tail = undefined;
+            return temp;
+        }
     }).bind(this);
     this.push = (function (node) {
-        var temp = this.tail;
-        temp.next = node;
-        this.tail = node;
+        var temp = node;
+        if (this.tail) {
+            this.tail.next = temp;
+        } else {
+            this.head = temp;
+        }
+        this.tail = temp;
     }).bind(this);
 }
 
@@ -56,15 +67,14 @@ function getReach(n, m, edges, head) {
     while (toVisit.head) {
         //var currNode = toVisit.shift();
         var currNode = toVisit.pop();
-        console.log('curr', currNode);
         var curr = currNode.data.value;
         if (visited[curr]) {
             continue;
         }
-        visited[curr] = 6 * currNode.data.dist;
+        visited[curr] = 6 * parseInt(currNode.data.dist);
         for (var node of graph[curr]) {
             if (!visited[node]) {
-                toVisit.push(new Node({value: node, dist: currNode.dist + 1}));
+                toVisit.push(new Node({value: node, dist: parseInt(currNode.data.dist) + 1}));
                 delete graphClone[node];
             }
         }
