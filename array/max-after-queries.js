@@ -66,7 +66,7 @@ function arrayManipulation(n, queries) {
             }
         }
         if (bm.has(i - 1)) { 
-            let curr = bm.get(i);
+            let curr = bm.get(i - 1);
             while (curr) {
                 acc -= curr.val;
                 curr = curr.next;
