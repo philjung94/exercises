@@ -37,16 +37,40 @@ function arrayManipulation(n, queries) {
     var am = new Map();
     var bm = new Map();
     for (var [a, b, k] of queries) {
-        am.set(a, k);
-        bm.set(b, k);
+        if (am.has(a)) {
+            let curr = am.get(a);
+            while (curr.next) {
+                curr = curr.next;
+            }
+            curr.next = {val: k, next: undefined};
+        } else { 
+            am.set(a, { val: k, next: undefined });
+        }
+        if (bm.has(b)) {
+            let curr = bm.get(b);
+            while (curr.next) {
+                curr = curr.next;
+            }
+            curr.next = {val: k, next: undefined};
+        } else { 
+            bm.set(b, { val: k, next: undefined });
+        }
     }
     for (var i = 1; i <= n; i++) {
         arr.push(0);
         if (am.has(i)) { 
-            acc += am.get(i);
+            let curr = am.get(i);
+            while (curr) {
+                acc += curr.val;
+                curr = curr.next;
+            }
         }
         if (bm.has(i - 1)) { 
-            acc -= bm.get(i - 1);
+            let curr = bm.get(i);
+            while (curr) {
+                acc -= curr.val;
+                curr = curr.next;
+            }
         }
         arr[i - 1] += acc;
         if (arr[i - 1] > max) max = arr[i - 1];
